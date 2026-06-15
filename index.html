@@ -1,1 +1,1224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eraldo Gomes · Máquina de Crescimento</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
+:root {
+  --bege: #F4EFE6;
+  --bege2: #EDE5D4;
+  --dourado: #B8943F;
+  --dourado-claro: #D4AE5C;
+  --sage: #6B8F78;
+  --sage-escuro: #3E6050;
+  --sage-claro: #9DBDAC;
+  --texto: #1E1E1E;
+  --texto-medio: #4A4A4A;
+  --texto-suave: #7A7A7A;
+  --branco: #FDFAF5;
+  --card: #FFFFFF;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bege);
+  color: var(--texto);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--sage-escuro);
+  padding: 18px 20px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+
+.logo-wrap { line-height: 1; }
+.logo-nome {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--bege);
+  letter-spacing: 0.06em;
+}
+.logo-nome em { font-style: italic; color: var(--dourado-claro); }
+.logo-sub {
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sage-claro);
+  margin-top: 3px;
+}
+.header-badge {
+  font-size: 10px;
+  background: rgba(212,174,92,0.2);
+  border: 1px solid rgba(212,174,92,0.4);
+  color: var(--dourado-claro);
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(160deg, var(--sage-escuro) 0%, #2A4A38 60%, #1C3328 100%);
+  padding: 36px 20px 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(184,148,63,0.12) 0%, transparent 70%);
+  top: -80px; right: -80px;
+}
+.hero-label {
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--dourado-claro);
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 34px;
+  font-weight: 300;
+  color: var(--branco);
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+.hero h1 em { font-style: italic; color: var(--dourado-claro); }
+.hero-desc {
+  font-size: 13px;
+  color: rgba(253,250,245,0.65);
+  font-weight: 300;
+  line-height: 1.75;
+  max-width: 380px;
+  margin: 0 auto 20px;
+}
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+}
+.stat { text-align: center; }
+.stat-n {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--dourado-claro);
+  line-height: 1;
+}
+.stat-l {
+  font-size: 10px;
+  color: rgba(253,250,245,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 3px;
+}
+
+/* ── TABS ── */
+.tabs-wrap {
+  background: var(--branco);
+  border-bottom: 1px solid rgba(184,148,63,0.2);
+  overflow-x: auto;
+  scrollbar-width: none;
+  position: sticky;
+  top: 56px;
+  z-index: 100;
+}
+.tabs-wrap::-webkit-scrollbar { display: none; }
+.tabs {
+  display: flex;
+  padding: 0 8px;
+  min-width: max-content;
+}
+.tab {
+  padding: 13px 14px;
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--texto-suave);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.tab .tab-icon { font-size: 13px; }
+.tab.active { color: var(--sage-escuro); border-bottom-color: var(--dourado); font-weight: 500; }
+.tab:hover { color: var(--sage-escuro); }
+
+/* ── MAIN ── */
+main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+/* ── PANEL ── */
+.panel { display: none; }
+.panel.active { display: block; animation: rise 0.3s ease; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── PANEL HEADER ── */
+.panel-head {
+  background: var(--card);
+  border: 1px solid rgba(184,148,63,0.18);
+  border-radius: 14px;
+  padding: 22px 20px 18px;
+  margin-bottom: 20px;
+}
+.panel-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--dourado);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.panel-eyebrow::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(184,148,63,0.2);
+}
+.panel-head h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--texto);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.panel-head p {
+  font-size: 13px;
+  color: var(--texto-medio);
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+/* ── FIELDS ── */
+.fields { display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+.field label {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--sage-escuro);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.field-hint {
+  font-size: 11px;
+  color: var(--texto-suave);
+  margin-bottom: 7px;
+  font-style: italic;
+  font-weight: 300;
+}
+input[type=text], textarea, select {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--branco);
+  border: 1px solid rgba(107,143,120,0.3);
+  border-radius: 9px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  color: var(--texto);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  resize: vertical;
+}
+input[type=text]::placeholder, textarea::placeholder {
+  color: rgba(122,122,122,0.45);
+  font-style: italic;
+}
+input[type=text]:focus, textarea:focus {
+  border-color: var(--sage);
+  box-shadow: 0 0 0 3px rgba(107,143,120,0.1);
+}
+
+/* chips de exemplo */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chip {
+  font-size: 11px;
+  padding: 4px 10px;
+  background: rgba(107,143,120,0.1);
+  border: 1px solid rgba(107,143,120,0.25);
+  border-radius: 20px;
+  color: var(--sage-escuro);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chip:hover { background: rgba(107,143,120,0.22); }
+
+/* ── BTN ── */
+.btn-gerar {
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, var(--sage-escuro), var(--sage));
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-gerar:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2A4A38, var(--sage-escuro));
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(62,96,80,0.28);
+}
+.btn-gerar:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+/* ── RESULTADO ── */
+.resultado {
+  margin-top: 20px;
+  background: var(--card);
+  border: 1px solid rgba(184,148,63,0.22);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.res-head {
+  padding: 11px 16px;
+  background: linear-gradient(90deg, rgba(184,148,63,0.08), transparent);
+  border-bottom: 1px solid rgba(184,148,63,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.res-label {
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--dourado);
+  font-weight: 500;
+}
+.res-actions { display: flex; gap: 8px; }
+.btn-copy, .btn-clear {
+  font-size: 11px;
+  padding: 4px 11px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.15s;
+  border: 1px solid;
+}
+.btn-copy {
+  color: var(--sage-escuro);
+  background: rgba(107,143,120,0.1);
+  border-color: rgba(107,143,120,0.3);
+}
+.btn-copy:hover { background: rgba(107,143,120,0.2); }
+.btn-clear {
+  color: var(--texto-suave);
+  background: transparent;
+  border-color: rgba(122,122,122,0.2);
+}
+.btn-clear:hover { background: rgba(122,122,122,0.08); }
+.res-body {
+  padding: 18px 16px;
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: var(--texto-medio);
+  font-weight: 300;
+  white-space: pre-wrap;
+}
+
+/* ── LOADING ── */
+.loading {
+  padding: 32px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--texto-suave);
+  font-size: 12px;
+  font-style: italic;
+}
+.dots { display: flex; gap: 5px; }
+.dots span {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--sage);
+  animation: blink 1.2s ease infinite;
+}
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink {
+  0%,80%,100% { transform: scale(0.5); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(184,148,63,0.15);
+  font-size: 11px;
+  color: var(--texto-suave);
+  font-weight: 300;
+}
+.footer strong { color: var(--dourado); font-weight: 400; }
+
+/* ── SEPARADOR ── */
+.sep {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184,148,63,0.25), transparent);
+  margin: 20px 0;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <div class="logo-nome">Eraldo <em>Gomes</em></div>
+    <div class="logo-sub">Neuroarquitetura · Interiores</div>
+  </div>
+  <div class="header-badge">IA · Conteúdo</div>
+</header>
+
+<div class="hero">
+  <div class="hero-label">Máquina de Crescimento Instagram</div>
+  <h1>Conteúdo que <em>encanta</em><br>e fecha contratos</h1>
+  <p class="hero-desc">13 ferramentas construídas para o seu nicho — neuroarquitetura, sua história, seu público. Não para um arquiteto genérico.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">13</div><div class="stat-l">Ferramentas</div></div>
+    <div class="stat"><div class="stat-n">IA</div><div class="stat-l">Especializada</div></div>
+    <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Conteúdos</div></div>
+  </div>
+</div>
+
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="show(0)"><span class="tab-icon">🧭</span>30 Ideias Virais</button>
+    <button class="tab" onclick="show(1)"><span class="tab-icon">🔍</span>Análise Concorrentes</button>
+    <button class="tab" onclick="show(2)"><span class="tab-icon">🎠</span>Carrossel 7 Slides</button>
+    <button class="tab" onclick="show(3)"><span class="tab-icon">🎯</span>50 Headlines</button>
+    <button class="tab" onclick="show(4)"><span class="tab-icon">📅</span>Plano 30 Dias</button>
+    <button class="tab" onclick="show(5)"><span class="tab-icon">📈</span>Plano Crescimento</button>
+    <button class="tab" onclick="show(6)"><span class="tab-icon">👤</span>Pesquisa Audiência</button>
+    <button class="tab" onclick="show(7)"><span class="tab-icon">🎬</span>Roteiro Reels</button>
+    <button class="tab" onclick="show(8)"><span class="tab-icon">✏️</span>Otimizar Post</button>
+    <button class="tab" onclick="show(9)"><span class="tab-icon">💰</span>Conteúdo de Vendas</button>
+    <button class="tab" onclick="show(10)"><span class="tab-icon">♻️</span>Reaproveitar</button>
+    <button class="tab" onclick="show(11)"><span class="tab-icon">🗓️</span>Sistema 60 Dias</button>
+    <button class="tab" onclick="show(12)"><span class="tab-icon">💡</span>Ideias de Conteúdo</button>
+  </div>
+</div>
+
+<main>
+
+<!-- 0 · 30 IDEIAS VIRAIS -->
+<div class="panel active" id="p0">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 01</div>
+    <h2>30 Ideias Virais com Estrutura Completa</h2>
+    <p>Para cada ideia: título viral, gancho de abertura, emoção dominante, formato ideal (Reels/Carrossel/Story) e CTA. Tudo calibrado para neuroarquitetura.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Foco temático (opcional)</label>
+      <div class="field-hint">Deixe em branco para receber ideias variadas do seu nicho</div>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f0-tema', this)">Iluminação e bem-estar</span>
+        <span class="chip" onclick="fillChip('f0-tema', this)">Cores e emoções</span>
+        <span class="chip" onclick="fillChip('f0-tema', this)">Home office produtivo</span>
+        <span class="chip" onclick="fillChip('f0-tema', this)">Quarto e sono</span>
+        <span class="chip" onclick="fillChip('f0-tema', this)">Minha transição de carreira</span>
+      </div>
+      <input type="text" id="f0-tema" placeholder="Ex: como a disposição dos móveis afeta ansiedade...">
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(0)">⚡ Gerar 30 Ideias Virais</button>
+  <div id="r0"></div>
+</div>
+
+<!-- 1 · ANÁLISE CONCORRENTES -->
+<div class="panel" id="p1">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 02</div>
+    <h2>Análise de Concorrentes + 15 Conteúdos Originais</h2>
+    <p>A IA analisa os padrões de viralização do nicho de arquitetura e neuroarquitetura no Instagram e cria 15 conteúdos originais seus — organizados por potencial de alcance.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Qual aspecto você quer explorar?</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f1-foco', this)">Conteúdo educativo</span>
+        <span class="chip" onclick="fillChip('f1-foco', this)">Bastidores de projeto</span>
+        <span class="chip" onclick="fillChip('f1-foco', this)">Transformações antes/depois</span>
+        <span class="chip" onclick="fillChip('f1-foco', this)">Opinião polêmica</span>
+      </div>
+      <input type="text" id="f1-foco" placeholder="Ex: posts de autoridade que geram pedidos de orçamento...">
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(1)">🔍 Analisar e Criar Conteúdos</button>
+  <div id="r1"></div>
+</div>
+
+<!-- 2 · CARROSSEL 7 SLIDES -->
+<div class="panel" id="p2">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 03</div>
+    <h2>Carrossel Viral em 7 Slides</h2>
+    <p>Estrutura completa: gancho → dor → quebra de padrão → curiosidade → solução → prova → CTA. Maximizado para salvamentos e compartilhamentos.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Tema do carrossel</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f2-tema', this)">5 erros que destroem o bem-estar em casa</span>
+        <span class="chip" onclick="fillChip('f2-tema', this)">O que a cor da sua parede revela sobre você</span>
+        <span class="chip" onclick="fillChip('f2-tema', this)">Por que seu home office te deixa improdutivo</span>
+        <span class="chip" onclick="fillChip('f2-tema', this)">A ciência por trás do ambiente que você odeia</span>
+      </div>
+      <input type="text" id="f2-tema" placeholder="Ex: como a temperatura da luz afeta seu humor sem você perceber...">
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(2)">🎠 Criar Carrossel Completo</button>
+  <div id="r2"></div>
+</div>
+
+<!-- 3 · 50 HEADLINES -->
+<div class="panel" id="p3">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 04</div>
+    <h2>50 Headlines Viciantes</h2>
+    <p>Headlines que param o scroll — com os gatilhos: curiosidade, segredo oculto, erro comum, transformação, autoridade, polêmica e urgência. Prontas para usar em posts, carrosséis e Reels.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Tema ou subnicho</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f3-tema', this)">Neuroarquitetura residencial</span>
+        <span class="chip" onclick="fillChip('f3-tema', this)">Bem-estar em casa</span>
+        <span class="chip" onclick="fillChip('f3-tema', this)">Erros de decoração</span>
+        <span class="chip" onclick="fillChip('f3-tema', this)">Reforma inteligente</span>
+        <span class="chip" onclick="fillChip('f3-tema', this)">Escritório e produtividade</span>
+      </div>
+      <input type="text" id="f3-tema" placeholder="Ex: como ambientes afetam saúde mental e qualidade de vida...">
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(3)">🎯 Gerar 50 Headlines</button>
+  <div id="r3"></div>
+</div>
+
+<!-- 4 · PLANO 30 DIAS -->
+<div class="panel" id="p4">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 05</div>
+    <h2>Estratégia Completa de Crescimento — 30 Dias</h2>
+    <p>Planejamento diário com Reels, carrosséis, Stories, CTAs de engajamento, estratégias de alcance, retenção e como usar IA para acelerar tudo. Meta: crescimento real de autoridade.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Tempo disponível por dia</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f4-tempo', this)">30 minutos</span>
+        <span class="chip" onclick="fillChip('f4-tempo', this)">1 hora</span>
+        <span class="chip" onclick="fillChip('f4-tempo', this)">2 horas</span>
+      </div>
+      <input type="text" id="f4-tempo" placeholder="Ex: 1 hora por dia, mais nos fins de semana...">
+    </div>
+    <div class="field">
+      <label>Meta principal do mês</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f4-meta', this)">Fechar primeiro cliente próprio</span>
+        <span class="chip" onclick="fillChip('f4-meta', this)">Chegar a 500 seguidores qualificados</span>
+        <span class="chip" onclick="fillChip('f4-meta', this)">Ser reconhecido como referência em neuroarquitetura</span>
+      </div>
+      <input type="text" id="f4-meta" placeholder="Ex: conseguir 3 consultas de diagnóstico pagas...">
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(4)">📅 Gerar Plano de 30 Dias</button>
+  <div id="r4"></div>
+</div>
+
+<!-- 5 · PLANO CRESCIMENTO -->
+<div class="panel" id="p5">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 06</div>
+    <h2>Plano de Crescimento no Instagram</h2>
+    <p>Estratégia completa com pilares de conteúdo, posicionamento único para neuroarquitetura em Curitiba/Brasil, lacunas de mercado e alavancas de crescimento consistente.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Seu foco atual de captação</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f5-foco', this)">Residencial alto padrão</span>
+        <span class="chip" onclick="fillChip('f5-foco', this)">Comercial / escritórios</span>
+        <span class="chip" onclick="fillChip('f5-foco', this)">Consultoria online nacional</span>
+        <span class="chip" onclick="fillChip('f5-foco', this)">Projetos de reforma</span>
+      </div>
+      <input type="text" id="f5-foco" placeholder="Ex: casais que querem reformar a casa com foco em bem-estar...">
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(5)">📈 Gerar Plano de Crescimento</button>
+  <div id="r5"></div>
+</div>
+
+<!-- 6 · PESQUISA AUDIÊNCIA -->
+<div class="panel" id="p6">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 07</div>
+    <h2>Pesquisa Profunda de Audiência</h2>
+    <p>Mapeamento completo do seu cliente ideal: frustrações reais, medos não ditos, motivações de compra, objeções e como criar conteúdo que os atrai naturalmente até você.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Descreva seu cliente ideal com detalhes</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f6-cliente', this)">Casal 35-55 anos, renda alta, quer reformar sem saber por onde começar</span>
+        <span class="chip" onclick="fillChip('f6-cliente', this)">Profissional liberal que quer home office funcional e bonito</span>
+        <span class="chip" onclick="fillChip('f6-cliente', this)">Empresário que quer escritório que transmita autoridade</span>
+      </div>
+      <textarea id="f6-cliente" rows="3" placeholder="Ex: mulher 40 anos, Curitiba, trabalha em home office, sente que a casa não reflete quem ela é, tem verba para reformar mas medo de errar..."></textarea>
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(6)">👤 Mapear Audiência</button>
+  <div id="r6"></div>
+</div>
+
+<!-- 7 · ROTEIRO REELS -->
+<div class="panel" id="p7">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 08</div>
+    <h2>Roteiro de Reels de Alta Retenção</h2>
+    <p>Gancho que para o scroll nos primeiros 2 segundos → desenvolvimento com insight de neuroarquitetura → conclusão memorável → CTA que converte. No seu tom de voz.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Ideia ou insight para o Reels</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f7-ideia', this)">A cor da parede do seu quarto está sabotando seu sono</span>
+        <span class="chip" onclick="fillChip('f7-ideia', this)">Por que você se sente ansioso em certos ambientes</span>
+        <span class="chip" onclick="fillChip('f7-ideia', this)">Minha história: 23 anos como cabeleireiro → arquiteto</span>
+        <span class="chip" onclick="fillChip('f7-ideia', this)">O que a ciência diz sobre a disposição dos seus móveis</span>
+      </div>
+      <textarea id="f7-ideia" rows="3" placeholder="Ex: como a altura do teto influencia sua criatividade e por que escritórios modernos estão usando isso..."></textarea>
+    </div>
+    <div class="field">
+      <label>Duração aproximada do Reels</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f7-dur', this)">15-30 segundos</span>
+        <span class="chip" onclick="fillChip('f7-dur', this)">30-60 segundos</span>
+        <span class="chip" onclick="fillChip('f7-dur', this)">60-90 segundos</span>
+      </div>
+      <input type="text" id="f7-dur" placeholder="Ex: 45 segundos">
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(7)">🎬 Criar Roteiro</button>
+  <div id="r7"></div>
+</div>
+
+<!-- 8 · OTIMIZAR POST -->
+<div class="panel" id="p8">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 09</div>
+    <h2>Otimizador de Post</h2>
+    <p>Cole qualquer legenda, roteiro ou texto. A IA diagnostica o que está fraco — gancho raso, linguagem genérica, falta de personalidade — e reescreve com impacto real.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Cole aqui seu conteúdo</label>
+      <textarea id="f8-conteudo" rows="6" placeholder="Cole aqui o texto que você quer melhorar..."></textarea>
+    </div>
+    <div class="field">
+      <label>O que você sente que está faltando? (opcional)</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f8-problema', this)">Não engaja</span>
+        <span class="chip" onclick="fillChip('f8-problema', this)">Parece genérico</span>
+        <span class="chip" onclick="fillChip('f8-problema', this)">Gancho fraco</span>
+        <span class="chip" onclick="fillChip('f8-problema', this)">Não converte</span>
+        <span class="chip" onclick="fillChip('f8-problema', this)">Não soa como eu</span>
+      </div>
+      <input type="text" id="f8-problema" placeholder="Ex: acho que o gancho não prende e o texto é longo demais...">
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(8)">✏️ Otimizar Conteúdo</button>
+  <div id="r8"></div>
+</div>
+
+<!-- 9 · CONTEÚDO DE VENDAS -->
+<div class="panel" id="p9">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 10</div>
+    <h2>20 Posts que Vendem sem Parecer Venda</h2>
+    <p>Conteúdo educativo que posiciona seu serviço como a solução óbvia — abordando objeções reais, medos de compra e transformações que seu cliente deseja.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Serviço ou oferta que quer promover</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f9-oferta', this)">Consultoria de interiores online</span>
+        <span class="chip" onclick="fillChip('f9-oferta', this)">Projeto residencial completo</span>
+        <span class="chip" onclick="fillChip('f9-oferta', this)">Diagnóstico de ambiente (sessão única)</span>
+        <span class="chip" onclick="fillChip('f9-oferta', this)">Projeto comercial com neuroarquitetura</span>
+      </div>
+      <input type="text" id="f9-oferta" placeholder="Ex: consultoria de neuroarquitetura online para reformas residenciais...">
+    </div>
+    <div class="field">
+      <label>Principal objeção do seu cliente (opcional)</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f9-objecao', this)">É caro demais</span>
+        <span class="chip" onclick="fillChip('f9-objecao', this)">Não sei se preciso de arquiteto</span>
+        <span class="chip" onclick="fillChip('f9-objecao', this)">Tenho medo de não gostar do resultado</span>
+        <span class="chip" onclick="fillChip('f9-objecao', this)">Online funciona para arquitetura?</span>
+      </div>
+      <input type="text" id="f9-objecao" placeholder="Ex: acha que pode fazer sozinha no Pinterest...">
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(9)">💰 Gerar 20 Posts de Vendas</button>
+  <div id="r9"></div>
+</div>
+
+<!-- 10 · REAPROVEITAR -->
+<div class="panel" id="p10">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 11</div>
+    <h2>Motor de Reaproveitamento</h2>
+    <p>1 conteúdo → 6 formatos: Reels roteirizado, carrossel com slides descritos, legenda de feed, sequência de 5 Stories, thread e vídeo de 30s. Mesma mensagem, muito mais alcance.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Conteúdo original para multiplicar</label>
+      <textarea id="f10-conteudo" rows="5" placeholder="Cole aqui qualquer texto, post, roteiro ou ideia que você quer transformar em múltiplos formatos..."></textarea>
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(10)">♻️ Multiplicar em 6 Formatos</button>
+  <div id="r10"></div>
+</div>
+
+<!-- 11 · SISTEMA 60 DIAS -->
+<div class="panel" id="p11">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 12</div>
+    <h2>Sistema Completo — 60 Dias</h2>
+    <p>Plano operacional realista: frequência de posts, horários, fluxos de engajamento, geração de leads, reaproveitamento e revisões de performance. Feito para quem trabalha sozinho.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Tempo disponível por semana</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f11-tempo', this)">3-4 horas</span>
+        <span class="chip" onclick="fillChip('f11-tempo', this)">5-7 horas</span>
+        <span class="chip" onclick="fillChip('f11-tempo', this)">8-10 horas</span>
+      </div>
+      <input type="text" id="f11-tempo" placeholder="Ex: 1h nos dias de semana + 3h no sábado">
+    </div>
+    <div class="field">
+      <label>Seu objetivo nos próximos 60 dias</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f11-objetivo', this)">Fechar 3 clientes próprios</span>
+        <span class="chip" onclick="fillChip('f11-objetivo', this)">Construir audiência qualificada de 1.000 seguidores</span>
+        <span class="chip" onclick="fillChip('f11-objetivo', this)">Ser reconhecido como referência em neuroarquitetura no Brasil</span>
+      </div>
+      <input type="text" id="f11-objetivo" placeholder="Ex: gerar renda suficiente para sair do salão aos sábados...">
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(11)">🗓️ Criar Sistema de 60 Dias</button>
+  <div id="r11"></div>
+</div>
+
+<!-- 12 · IDEIAS DE CONTEÚDO (viral 50) -->
+<div class="panel" id="p12">
+  <div class="panel-head">
+    <div class="panel-eyebrow">Ferramenta 13</div>
+    <h2>50 Ideias de Conteúdo para o Mês</h2>
+    <p>Erros, mitos, opiniões impopulares, bastidores, ciência aplicada, transformações, tendências. Cada ideia específica, emocional e otimizada para alcance e salvamentos.</p>
+  </div>
+  <div class="fields">
+    <div class="field">
+      <label>Público que quer alcançar</label>
+      <div class="chips">
+        <span class="chip" onclick="fillChip('f12-publico', this)">Proprietários que querem reformar</span>
+        <span class="chip" onclick="fillChip('f12-publico', this)">Pessoas com ansiedade que não conectam com ambiente</span>
+        <span class="chip" onclick="fillChip('f12-publico', this)">Profissionais liberais em home office</span>
+        <span class="chip" onclick="fillChip('f12-publico', this)">Empresários que querem espaço de autoridade</span>
+      </div>
+      <input type="text" id="f12-publico" placeholder="Ex: mulheres 35-50 anos que sentem que a casa não reflete quem elas são...">
+    </div>
+    <div class="field">
+      <label>Algum tema que quer priorizar? (opcional)</label>
+      <input type="text" id="f12-tema" placeholder="Ex: bem-estar, produtividade, identidade do lar, psicologia das cores...">
+    </div>
+  </div>
+  <button class="btn-gerar" onclick="run(12)">💡 Gerar 50 Ideias</button>
+  <div id="r12"></div>
+</div>
+
+<div class="footer">
+  <strong>@eraldo_gomes_arquitetura</strong> · Neuroarquitetura & Interiores · Araucária/Curitiba-PR · Brasil
+</div>
+
+</main>
+
+<script>
+/* ─── PERSONA ERALDO ─── */
+const PERSONA = `
+Você é um especialista sênior em marketing digital e criação de conteúdo para profissionais de arquitetura e design de alto padrão no Instagram brasileiro.
+
+═══ IDENTIDADE DO PROFISSIONAL ═══
+Nome: Eraldo Gomes
+Especialidade: Neuroarquitetura e Design de Interiores
+Formação: Arquitetura (dezembro/2025) + Pós-graduação em Neuroarquitetura
+Registro: CAU ativo
+Localização: Araucária/Curitiba-PR — atende todo o Brasil online
+Instagram: @eraldo_gomes_arquitetura
+WhatsApp: (41) 99793-2403
+
+═══ HISTÓRIA E DIFERENCIAL ═══
+Eraldo tem uma história poderosa e rara: trabalhou 23 anos como cabeleireiro antes de se tornar arquiteto especialista em neuroarquitetura. Essa trajetória não é um desvio — é o coração do seu diferencial. Ele conhece profundamente como pessoas se sentem com sua aparência e seu espaço. Hoje aplica a ciência da neuroarquitetura para criar ambientes que transformam saúde mental, produtividade, relações e autoestima — exatamente como uma boa transformação estética pode mudar a forma como uma pessoa se vê no mundo.
+
+Seu diferencial competitivo:
+• Único arquiteto com pós em neuroarquitetura + trajetória humana de transformação
+• Une ciência (neurociência ambiental) com sensibilidade estética e emocional
+• Atende todo o Brasil online com metodologia própria
+• Fala a linguagem do cliente — não fala "layout" nem "projeto executivo" para leigos
+
+═══ PÚBLICO-ALVO ═══
+Classe média-alta. Perfis típicos:
+• Casais 35-55 anos que querem reformar e não sabem por onde começar
+• Mulheres que sentem que a casa não reflete quem elas são
+• Profissionais que trabalham em home office e sofrem com improdutividade
+• Empresários que querem escritórios que transmitam autoridade
+• Pessoas com ansiedade ou insônia que não percebem que o ambiente contribui
+
+═══ TOM DE VOZ ═══
+Elegante, humano, próximo, confiante, inteligente mas nunca arrogante.
+NÃO usa termos técnicos de arquitetura sem explicar. NÃO faz conteúdo básico de decoração. 
+USA storytelling, ciência acessível, provocação gentil, perspectiva inusitada.
+Fala de transformação emocional e de vida — não só de espaço físico.
+
+═══ PALETA E IDENTIDADE VISUAL ═══
+Bege / Verde sage / Dourado
+
+═══ FASE ATUAL ═══
+Captando os primeiros clientes próprios com urgência financeira real.
+O conteúdo precisa: ENCANTAR → GERAR CONFIANÇA → CONVERTER em consultas e projetos.
+
+═══ DIRETRIZ MÁXIMA ═══
+JAMAIS crie conteúdo genérico que qualquer arquiteto poderia usar.
+Cada output deve soar como SE O PRÓPRIO ERALDO TIVESSE ESCRITO — com sua história, sua ciência, sua perspectiva única.
+Priorize sempre: encantamento do cliente → fechamento de negócios → fidelização.
+`;
+
+/* ─── PROMPTS ─── */
+const PROMPTS = [
+
+/* 0 · 30 ideias virais */
+(d) => `${PERSONA}
+
+Atue como estrategista de crescimento para Instagram especializado em conteúdos virais para nichos de autoridade.
+
+Analise o nicho de neuroarquitetura e interiores de Eraldo Gomes e crie 30 ideias de conteúdo com potencial de alcançar mais de 100 mil visualizações.
+${d.tema ? `Foco temático desejado: ${d.tema}` : 'Varie entre os principais ângulos do nicho.'}
+
+Para cada uma das 30 ideias, forneça EXATAMENTE este formato:
+━━━━━━━━━━━━━━━━━━
+[NÚMERO]. [TÍTULO VIRAL]
+🎯 Gancho de abertura: [primeiros 2 segundos do vídeo ou primeira linha do post]
+💭 Emoção dominante: [o que o público sente ao ver isso]
+📱 Formato ideal: [Reels / Carrossel / Story]
+📣 CTA recomendado: [chamada para ação específica]
+━━━━━━━━━━━━━━━━━━
+
+Priorize temas: erros não percebidos, ciência surpreendente, opiniões polêmicas, bastidores reais, transformações emocionais, mitos do segmento.
+Cada ideia deve ser específica de neuroarquitetura — jamais genérica de decoração.`,
+
+/* 1 · análise concorrentes */
+(d) => `${PERSONA}
+
+Analise os perfis de maior sucesso no Instagram nos nichos de neuroarquitetura, bem-estar em ambientes, psicologia do espaço e arquitetura de alto padrão no Brasil.
+
+Identifique: padrões de viralização, gatilhos psicológicos predominantes, formatos mais utilizados e estilos de comunicação que geram mais engajamento.
+${d.foco ? `Aspecto de interesse: ${d.foco}` : ''}
+
+Com base nessa análise, crie 15 conteúdos originais para o @eraldo_gomes_arquitetura — mantendo os princípios que geram milhões de visualizações, mas com voz, história e diferencial ÚNICOS do Eraldo.
+
+Para cada conteúdo:
+→ Título/gancho
+→ Estrutura resumida
+→ Por que tem potencial viral (qual gatilho ativa)
+→ Formato recomendado
+
+Organize do MAIOR para o menor potencial de alcance.`,
+
+/* 2 · carrossel 7 slides */
+(d) => `${PERSONA}
+
+Transforme o tema abaixo em um carrossel viral de 7 slides para o Instagram do Eraldo Gomes.
+TEMA: ${d.tema || 'como ambientes mal projetados sabotam sua saúde mental sem que você perceba'}
+
+Estruture EXATAMENTE assim:
+SLIDE 1 — GANCHO (para o scroll): frase que gera curiosidade ou choque imediato
+SLIDE 2 — IDENTIFICAÇÃO DA DOR: o leitor se vê nessa situação
+SLIDE 3 — QUEBRA DE PADRÃO: uma informação ou perspectiva que contradiz o senso comum
+SLIDE 4 — CONSTRUÇÃO DE CURIOSIDADE: aprofunda a revelação, deixa o leitor querendo mais
+SLIDE 5 — SOLUÇÃO PRÁTICA: o que Eraldo aplicaria como neuroarquiteto (específico, não óbvio)
+SLIDE 6 — PROVA / AUTORIDADE: dado científico, resultado ou perspectiva de especialista
+SLIDE 7 — CTA DE COMPARTILHAMENTO: frase que faz o seguidor querer salvar e marcar alguém
+
+Para cada slide: texto completo pronto para usar + sugestão visual.
+Objetivo: maximizar retenção, salvamentos e compartilhamentos.`,
+
+/* 3 · 50 headlines */
+(d) => `${PERSONA}
+
+Crie 50 headlines extremamente viciantes sobre: ${d.tema || 'neuroarquitetura, ambientes e bem-estar'}.
+
+As headlines devem ser inspiradas nos conteúdos mais virais do Instagram brasileiro e gerar vontade imediata de parar e consumir o conteúdo.
+
+Distribua entre os 7 gatilhos — marque cada um:
+[CURIOSIDADE] — o leitor precisa saber o que vem depois
+[SEGREDO OCULTO] — algo que poucos sabem ou que nunca foi revelado assim
+[ERRO COMUM] — o leitor reconhece que faz isso e quer saber como parar
+[TRANSFORMAÇÃO] — antes vs depois emocional ou físico
+[AUTORIDADE] — a ciência ou especialista diz o que parece contraintuitivo
+[POLÊMICA] — uma opinião que divide ou provoca reação
+[URGÊNCIA] — algo que precisa ser feito ou mudado agora
+
+Numere de 1 a 50. Escreva headlines que soem como ERALDO FALANDO — com a perspectiva da neuroarquitetura + a sensibilidade humana de quem passou 23 anos entendendo como pessoas se sentem.`,
+
+/* 4 · plano 30 dias */
+(d) => `${PERSONA}
+
+Monte uma estratégia completa de crescimento para o Instagram do Eraldo Gomes durante 30 dias.
+Tempo disponível: ${d.tempo || '1 hora por dia'}
+Meta principal: ${d.meta || 'fechar os primeiros clientes próprios e construir autoridade em neuroarquitetura'}
+
+Crie um plano OPERACIONAL com:
+
+📆 ESTRUTURA SEMANAL
+→ Quantos e quais tipos de conteúdo por semana (Reels, Carrossel, Stories, Feed)
+→ Dias e horários ideais para postar para público de Curitiba/Brasil
+
+🎬 IDEIAS DE REELS (5 prontas para o mês)
+→ Tema + gancho de abertura + estrutura de 30-60s
+
+🎠 IDEIAS DE CARROSSEL (4 prontas para o mês)
+→ Tema + ângulo + slide de capa
+
+📱 ROTINA DE STORIES
+→ O que postar diariamente (bastidores, enquetes, processo criativo)
+
+📣 CTAs DE ENGAJAMENTO
+→ 10 frases de chamada para ação personalizadas para o nicho de Eraldo
+
+🚀 ESTRATÉGIAS DE ALCANCE
+→ Hashtags, colabs, formato de gancho, horários
+
+🔁 RETENÇÃO E FIDELIZAÇÃO
+→ Como transformar seguidores em leads quentes
+
+🤖 USO DE IA PARA ACELERAR A PRODUÇÃO
+→ Como usar IA para escrever mais rápido sem perder autenticidade
+
+Torne o plano simples de executar para alguém que trabalha de segunda a sexta como assistente de arquiteta e no salão aos sábados.`,
+
+/* 5 · plano crescimento */
+(d) => `${PERSONA}
+
+Crie uma estratégia completa de posicionamento e crescimento no Instagram para Eraldo Gomes.
+Foco de captação atual: ${d.foco || 'consultoria de interiores com neuroarquitetura para clientes de todo o Brasil'}
+
+Analise:
+• Oportunidades de conteúdo que concorrentes do nicho não estão explorando
+• Lacunas de posicionamento (o que diferencia Eraldo de outros arquitetos no Instagram)
+• Alavancas de crescimento mais rápidas para quem está começando com autoridade real mas pouca audiência
+
+Entregue:
+1. POSICIONAMENTO ÚNICO — como Eraldo deve se apresentar em 1 frase poderosa
+2. PILARES DE CONTEÚDO — 5 categorias temáticas com exemplos reais de posts
+3. TEMAS DE POSTAGEM — 20 temas específicos de neuroarquitetura com ângulo diferenciado
+4. ESTRATÉGIA DE ATRAÇÃO — como crescer de 0 para seguidores qualificados usando o diferencial de Eraldo
+5. FUNIL DE CONTEÚDO — como guiar seguidor → lead → cliente`,
+
+/* 6 · pesquisa audiência */
+(d) => `${PERSONA}
+
+Faça uma análise profunda do seguinte perfil de cliente ideal de Eraldo Gomes:
+${d.cliente || 'Casais 35-55 anos, classe média-alta, que querem reformar a casa mas não sabem por onde começar, têm medo de errar, e sentem que o ambiente não reflete quem são'}
+
+Mapeie com profundidade real:
+
+😤 FRUSTRAÇÕES (as 10 maiores dores relacionadas ao espaço que habitam)
+😰 MEDOS NÃO DITOS (o que eles têm medo que aconteça mas nunca falam abertamente)
+🎯 OBJETIVOS REAIS (além da reforma — o que eles querem sentir e viver)
+💳 MOTIVAÇÕES DE COMPRA (o que faz esse cliente finalmente contratar)
+🚧 OBJEÇÕES PRINCIPAIS (por que ainda não contrataram um arquiteto)
+✨ TRANSFORMAÇÕES DESEJADAS (como querem se sentir depois)
+
+Com base nisso, gere:
+→ 15 TEMAS DE CONTEÚDO que ativam cada dor ou desejo mapeado
+→ 10 ÂNGULOS DE POST que criam identificação instantânea
+→ 5 FRASES QUE PARAM O SCROLL — que esse cliente específico leria e pensaria "isso é pra mim"`,
+
+/* 7 · roteiro reels */
+(d) => `${PERSONA}
+
+Crie um roteiro completo de Reels para o @eraldo_gomes_arquitetura.
+IDEIA: ${d.ideia || 'como a cor das paredes do seu quarto sabota seu sono sem que você perceba'}
+DURAÇÃO: ${d.dur || '45-60 segundos'}
+
+Estruture assim:
+
+🔴 GANCHO [0-3 segundos] — frase ou ação que PARA o scroll imediatamente
+↓
+📖 DESENVOLVIMENTO [4-40 segundos] — insights de neuroarquitetura, específicos, surpreendentes, com linguagem humana e acessível. Divida em beats de 5-8 segundos cada.
+↓
+💡 VIRADA/REVELAÇÃO — o ponto que ninguém esperava
+↓
+🎯 CONCLUSÃO MEMORÁVEL + CTA [últimos 5 segundos] — frase que fica na cabeça + chamada para ação
+
+Para cada parte: texto exato de locução + sugestão de visual/câmera.
+Tom: como Eraldo falando olho no olho — confiante, humano, inteligente, nunca robótico.`,
+
+/* 8 · otimizar post */
+(d) => `${PERSONA}
+
+Otimize o conteúdo abaixo para o @eraldo_gomes_arquitetura.
+
+CONTEÚDO ORIGINAL:
+---
+${d.conteudo || '(nenhum conteúdo fornecido)'}
+---
+${d.problema ? `O que o autor sente que está faltando: ${d.problema}` : ''}
+
+Faça em 3 etapas:
+
+🔍 DIAGNÓSTICO — identifique especificamente:
+• Gancho: está prendendo nos primeiros 3 segundos/linhas?
+• Tom: soa como Eraldo ou como qualquer arquiteto?
+• Clareza: está claro o que o leitor ganha ao continuar?
+• Emoção: toca em alguma dor ou desejo real?
+• CTA: é específico e convincente?
+• O que está genérico, fraco ou desperdiçando atenção?
+
+✍️ VERSÃO OTIMIZADA — reescreva o conteúdo completo mantendo a ideia original mas com:
+• Gancho poderoso
+• Voz de Eraldo (história, neuroarquitetura, humanidade)
+• Linguagem que converte
+
+📊 O QUE MUDOU E POR QUÊ — explique as principais mudanças`,
+
+/* 9 · conteúdo de vendas */
+(d) => `${PERSONA}
+
+Gere 20 ideias de conteúdo para o Instagram do Eraldo Gomes que atraiam leads e conversões para:
+OFERTA: ${d.oferta || 'consultoria de interiores com neuroarquitetura — atende todo o Brasil online'}
+${d.objecao ? `Objeção principal a quebrar: ${d.objecao}` : ''}
+
+Regra de ouro: o conteúdo deve ser tão valioso que o cliente quer seguir Eraldo — e ao mesmo tempo deixa claro que trabalhar com ele é o próximo passo natural.
+
+Para cada uma das 20 ideias:
+→ TÍTULO/GANCHO
+→ ESTRUTURA DO CONTEÚDO (o que abordar)
+→ COMO O SERVIÇO DE ERALDO APARECE NATURALMENTE (sem forçar)
+→ OBJEÇÃO QUE QUEBRA
+→ FORMATO RECOMENDADO
+
+Distribua entre: educar, inspirar, provar autoridade, quebrar objeção, gerar urgência, mostrar transformação.`,
+
+/* 10 · reaproveitar */
+(d) => `${PERSONA}
+
+Pegue o conteúdo abaixo e transforme em 6 formatos diferentes para o @eraldo_gomes_arquitetura.
+
+CONTEÚDO ORIGINAL:
+---
+${d.conteudo || '(nenhum conteúdo fornecido)'}
+---
+
+Crie:
+1. 🎬 ROTEIRO DE REELS (30-60s) — gancho + desenvolvimento + CTA com locução exata
+2. 🎠 CARROSSEL (6 slides) — texto de cada slide + sugestão visual
+3. 📝 LEGENDA DE FEED — texto completo com gancho, desenvolvimento e CTA + hashtags
+4. 📱 SEQUÊNCIA DE STORIES (5 telas) — texto + tipo de mídia (enquete/quiz/vídeo/imagem)
+5. 🧵 THREAD — série de 5 posts curtos conectados
+6. ⚡ VÍDEO CURTO 20-30S — versão ultra condensada para máximo alcance
+
+Em cada formato: adapte estrutura, ritmo e linguagem — mas mantenha a mensagem central e o tom de Eraldo.`,
+
+/* 11 · sistema 60 dias */
+(d) => `${PERSONA}
+
+Crie um sistema completo de crescimento e monetização no Instagram para o Eraldo Gomes nos próximos 60 dias.
+
+Tempo disponível: ${d.tempo || '5-7 horas por semana'}
+Objetivo: ${d.objetivo || 'fechar os primeiros clientes próprios e construir autoridade reconhecida em neuroarquitetura'}
+
+Contexto importante: Eraldo trabalha como assistente de uma arquiteta de segunda a sexta e ainda trabalha no salão aos sábados. Tem urgência financeira real. O sistema precisa ser executável por uma pessoa sozinha sem comprometer o trabalho principal.
+
+Entregue um sistema com:
+
+📅 SEMANAS 1-2: FUNDAÇÃO
+→ O que configurar, qual conteúdo criar primeiro, como começar a construir audiência
+
+📅 SEMANAS 3-4: CRESCIMENTO
+→ Cadência de posts, estratégia de engajamento, primeiras abordagens de captação
+
+📅 SEMANAS 5-6: CONVERSÃO
+→ Como transformar engajamento em leads, primeiras consultas, abordagem de WhatsApp
+
+📅 SEMANAS 7-8: ESCALA
+→ Reaproveitamento de conteúdo, otimização baseada em dados, processos que se repetem
+
+Para cada fase: ações diárias/semanais específicas, templates de resposta no DM/WhatsApp, métricas para acompanhar.
+
+🤖 ACELERAÇÃO COM IA: como usar IA para produzir em 30min o que levaria 3 horas`,
+
+/* 12 · 50 ideias */
+(d) => `${PERSONA}
+
+Gere 50 ideias de conteúdo para o mês do @eraldo_gomes_arquitetura.
+Público-alvo: ${d.publico || 'proprietários de imóveis classe média-alta que querem transformar seus ambientes'}
+${d.tema ? `Tema prioritário: ${d.tema}` : ''}
+
+Distribua entre:
+• Erros e mitos (que o cliente comete sem saber)
+• Ciência aplicada (neuroarquitetura explicada de forma simples)
+• Opiniões impopulares de Eraldo (polêmica construtiva)
+• Bastidores (processo criativo, dia a dia como arquiteto)
+• Transformações (antes/depois emocional e físico)
+• Tendências e o que ninguém está falando
+• A história de Eraldo (23 anos como cabeleireiro → neuroarquitetura)
+
+Para cada ideia:
+• Título/gancho pronto
+• Ângulo específico (o que torna essa ideia diferente do óbvio)
+• Formato recomendado
+
+Numere de 1 a 50. Cada ideia deve ser específica — jamais genérica.`
+];
+
+/* ─── UI ─── */
+function show(i) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('p' + i).classList.add('active');
+  document.querySelectorAll('.tab')[i].classList.add('active');
+}
+
+function fillChip(id, el) {
+  const inp = document.getElementById(id);
+  if (inp) {
+    inp.value = el.textContent.trim();
+    inp.focus();
+  }
+}
+
+function getVal(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+const FIELDS = [
+  { tema: 'f0-tema' },
+  { foco: 'f1-foco' },
+  { tema: 'f2-tema' },
+  { tema: 'f3-tema' },
+  { tempo: 'f4-tempo', meta: 'f4-meta' },
+  { foco: 'f5-foco' },
+  { cliente: 'f6-cliente' },
+  { ideia: 'f7-ideia', dur: 'f7-dur' },
+  { conteudo: 'f8-conteudo', problema: 'f8-problema' },
+  { oferta: 'f9-oferta', objecao: 'f9-objecao' },
+  { conteudo: 'f10-conteudo' },
+  { tempo: 'f11-tempo', objetivo: 'f11-objetivo' },
+  { publico: 'f12-publico', tema: 'f12-tema' }
+];
+
+async function run(i) {
+  const dados = {};
+  Object.entries(FIELDS[i]).forEach(([k, id]) => { dados[k] = getVal(id); });
+
+  const rDiv = document.getElementById('r' + i);
+  rDiv.innerHTML = `<div class="resultado"><div class="res-head"><span class="res-label">✦ Gerando</span></div><div class="loading"><div class="dots"><span></span><span></span><span></span></div><span>A IA está criando seu conteúdo personalizado...</span></div></div>`;
+
+  const btn = rDiv.previousElementSibling;
+  btn.disabled = true;
+
+  try {
+    const prompt = PROMPTS[i](dados);
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+    const text = (data.content || []).map(b => b.text || '').join('\n').trim() || 'Não foi possível gerar o conteúdo.';
+
+    rDiv.innerHTML = `
+      <div class="resultado">
+        <div class="res-head">
+          <span class="res-label">✦ Resultado</span>
+          <div class="res-actions">
+            <button class="btn-copy" onclick="copy(this,'txt${i}')">Copiar</button>
+            <button class="btn-clear" onclick="document.getElementById('r${i}').innerHTML=''">Limpar</button>
+          </div>
+        </div>
+        <div class="res-body" id="txt${i}">${esc(text)}</div>
+      </div>`;
+  } catch(e) {
+    rDiv.innerHTML = `<div class="resultado"><div class="res-head"><span class="res-label">Erro</span></div><div class="res-body">Erro: ${e.message || 'Não foi possível conectar. Verifique a conexão e tente novamente.'}</div></div>`;
+  }
+
+  btn.disabled = false;
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function copy(btn, id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => btn.textContent = 'Copiar', 2000);
+  });
+}
+</script>
+</body>
+</html>
